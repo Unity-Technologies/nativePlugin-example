@@ -1,0 +1,17 @@
+# For more information about the available options please visit: http://go/catalog-info (VPN required)
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  annotations:
+    github.com/project-slug: Unity-Technologies/nativePlugin-example
+  name: nativePlugin-example
+  description: "{TBD}"
+  labels:
+    costcenter: "5053"
+  tags:
+    - planned-public
+    - enterprise
+spec:
+  type: documentation
+  lifecycle: pre-production
+  owner: Unity-Technologies/mobile-editor-and-tools
