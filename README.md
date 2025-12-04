@@ -30,7 +30,7 @@ You can switch between Swift or Objective-C(Default enabled) plugin versions usi
 Or enabled them both, generate Xcode project and disable/enable one of them from the Xcode in Inspector while file selected:
 <img width="373" height="152" alt="image" src="https://github.com/user-attachments/assets/b781f3b4-0ca6-412a-9a77-093658befe36" />
 
-Select different Xcode Project Type:  
+Select different Xcode Project Type in Plugin Importer:  
 <img width="523" height="88" alt="image" src="https://github.com/user-attachments/assets/3f0f2017-618c-4d33-8266-420823d58572" />
 
 
