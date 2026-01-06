@@ -79,7 +79,7 @@ extern "C" void NativePlugin_SetCallback(NativePluginCallback cb)
 }
 
 // TODO Remove when UnitySendMessage will be exposed in Swift Public API 
-#if UNITY_SWIFT_TRAMPOLINE
+#if UNITY_XCODE_PROJECT_TYPE_SWIFT
 extern "C" void UnitySendMessage(const char* obj, const char* method, const char* msg);
 #endif
 
@@ -134,7 +134,7 @@ static void NativePluginDestructAtr() {
 // =====================================================================
 //         Unity App Controller Subclass Example  (IMPL_APP_CONTROLLER_SUBCLASS)
 // =====================================================================
-#if !UNITY_SWIFT_TRAMPOLINE
+#if !UNITY_XCODE_PROJECT_TYPE_SWIFT
 #import "UnityAppController.h"
 
 // Declare subclass
