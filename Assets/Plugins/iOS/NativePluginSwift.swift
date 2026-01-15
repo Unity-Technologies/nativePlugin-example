@@ -41,10 +41,10 @@ final class SwiftPlugin {
     }
 }
 
+#if !UNITY_XCODE_PROJECT_TYPE_SWIFT
 // ===========================================================
 //              UnitySendMessage bridge (from Unity)
 // ===========================================================
-// TODO  Remove After Public API
 
 @_silgen_name("UnitySendMessage")
 func UnitySendMessage(
@@ -52,6 +52,7 @@ func UnitySendMessage(
     _ method: UnsafePointer<CChar>!,
     _ msg: UnsafePointer<CChar>!
 )
+#endif
 
 
 // ===========================================================
@@ -110,6 +111,12 @@ public func NativePlugin_DoWork(_ goName: UnsafePointer<CChar>?) {
     // SendMessage → Unity -> C#
     let sendMessageText = "Hello from NativePlugin_DoWork via SendMessage (load=\(load))"
 
+#if UNITY_XCODE_PROJECT_TYPE_SWIFT
+    let name = goName.map(String.init(cString:))
+    if let name {
+        UnityPlayer.shared.sendMessage(toGameObject: name, method: "OnUnitySendMessage", argument: sendMessageText)
+    }
+#endif
     if let goName = goName {
         sendMessageText.withCString { msgPtr in
             UnitySendMessage(goName, "OnUnitySendMessage", msgPtr)

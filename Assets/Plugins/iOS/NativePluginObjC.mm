@@ -80,7 +80,7 @@ extern "C" void NativePlugin_SetCallback(NativePluginCallback cb)
 
 // TODO Remove when UnitySendMessage will be exposed in Swift Public API 
 #if UNITY_XCODE_PROJECT_TYPE_SWIFT
-extern "C" void UnitySendMessage(const char* obj, const char* method, const char* msg);
+#import "UnityPluginInterface.h"
 #endif
 
 extern "C" void NativePlugin_DoWork(const char* goName)
