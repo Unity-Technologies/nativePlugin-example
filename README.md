@@ -71,3 +71,39 @@ Managed C#:
 - Receiving UnitySendMessage calls from native side
 - A unified API that works identically for ObjC and Swift
 - RuntimeInitializeOnLoadMethod
+
+# Plugin initialization sequence
+| ObjC trampoline | < | > | Swift trampoline |
+|----------|------|------|------------------|
+| main() | Unity | Unity | main()-> SwiftUI.App.main |
+| ⤷ load UnityRuntime.framework dynamically | Unity |  |  |
+| · ⤷ [ObjCPlugin] +load (class load) called | NP.ObjC |  |  |
+| · ⤷ [AttrPlugin] NativePlugin constructor called | NP.Attr |  |  |
+| · ⤷ [GlobalPlugin] NativePlugin constructor called | NP.C++ |  |  |
+| ⤷ UFW runUIApplication | OS | OS | ⤷ run UIApplication |
+| · ⤷ UnityRuntime initialization | Unity |  |  |
+| · ⤷ [AppControllerPlugin] didFinishLaunchingWithOptions called | NP.AppCtl |  |  |
+| · · UnityRuntime initialized | Unity |  |  |
+| · UnityPlayerLoop | Unity | Unity | · UnityPlayerLoop |
+| · ⤷ C# RuntimeInitializeOnLoadMethod | C# | C# | · ⤷ C# RuntimeInitializeOnLoadMethod |
+| · · ⤷ C# Create new GO and AddComponent PluginTest | C# | C# | · · ⤷ C# Create new GO and AddComponent PluginTest |
+| · · · ⤷ C# PluginTest.Start() | C# | C# | · · · ⤷ C# PluginTest.Start() |
+| · · · · ⤷ [ObjC] NativePlugin_Init called | NP.C | PC.C | · · · · ⤷ [Swift] NativePlugin_Init called |
+| · · · · ⤷ [ObjCPlugin] +initialize (class init) called | NP.ObjC |  |  |
+| · · · · ⤷ [ObjCPlugin] instance init called | NP.ObjC | CP.Swift | · · · · ⤷ [SwiftPlugin] instance init called |
+| · · · · ⤷ [ObjCPlugin] sharedInstance created | NP.ObjC | NP.Swift | · · · · ⤷ [SwiftPlugin] sharedInstance created |
+| · · · · ⤷ [ObjC] NativePlugin_SetCallback registered | NP.ObjC |  | · · · · ⤷ [SwiftPlugin] sharedInstance created |
+
+# App/Plugin termination sequence
+| ObjC trampoline | < | > | Swift trampoline |
+|----------|------|------|------------------|
+|  main() | Unity | Unity | main()-> SwiftUI.App.main |
+|  ⤷ UFW runUIApplication |  OS | OS | ⤷ run UIApplication |
+|  · ⤷ applicationWillTerminate() | OS | OS | ⤷ applicationWillTerminate() |
+|  · ⤷ [AppControllerPlugin] applicationWillTerminate | NP.AppCtl |  |  |
+|  · · ⤷ UnityCleanup | Unity | Unity | · ⤷ UnityCleanup |
+|  · · · ⤷ Destroy Game Objects | Unity | Unity | ·  · ⤷ Destroy Game Objects |
+|  · · · · ⤷ C# PluginTest.OnDestroy | C# | C# | ·  · ⤷ C# PluginTest.OnDestroy |
+|  · · · · · [ObjC] NativePlugin_SetCallback registered | NP.C | NP.C | · · · [Swift] NativePlugin_SetCallback registered |
+|  · · · · · [ObjC] NativePlugin_Deinit called | NP.C | NP.C | · · · [Swift] NativePlugin_Deinit called |
+|  · · · · · [ObjCPlugin] sharedInstance deleted | NP.ObjC | NP.ObjC | · · · [SwiftPlugin] sharedInstance deleted |
