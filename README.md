@@ -1,4 +1,5 @@
-# Unity Native iOS/tvOS/visionOS Plugin Example
+# Unity native plug-in example for iOS, tvOS, and visionOS
+
 This repository demonstrates Objective-C and Swift native plugin implementations.
 - showcasing different initialization ways available per language
 - sharing a unified managed C# API
