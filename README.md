@@ -1,4 +1,4 @@
-# Unity native plug-in example for iOS, tvOS, and visionOS
+# Unity native plug-in example for Apple platforms
 
 This repository demonstrates Objective-C and Swift native plugin implementations.
 - showcasing different initialization ways available per language
