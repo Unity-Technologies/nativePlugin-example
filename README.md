@@ -15,22 +15,26 @@ Works on all Apple platforms (iOS, tvOS, visionOS) on both Device and Simulator 
 - PluginTest.cs Uses C# API from NativePlugin.cs
 
 # Two interchangeable native plugin implementations
-- Objective-C Plugin
+- NativePluginObjC.mm (Objective-C Plugin)
 Demonstrates: +load, +initialize, singleton initialization, global constructors/destructors, UnitySendMessage callbacks, C-level API exposure, and deep integration with Unity AppController.
 
-- Swift Plugin
+- NativePluginSwift.swift (Swift Plugin)
 Lightweight, explicit, and designed to showcase Swift-friendly integration with Unity.
 
 Both implementations expose the exact same C API, so the managed C# side does not change. Demonstrates unity lifecycle hooks to trigger native plugin initialization.  
 
 # How to use
-You can switch between Swift or Objective-C(Default enabled) plugin versions using Unity’s Plugin Importer:  
+## Plugin versions selection
+You can switch between Swift or Objective-C(Default enabled) plugin versions in two ways:
+1. Via Unity’s Plugin Importer, select plugin and toggle on/off supported platform (this way only one plugin will be included in build):
 <img width="229" height="250" alt="image" src="https://github.com/user-attachments/assets/8d620416-038d-4920-8c4d-24db88daaa70" />
 
-Or enabled them both, generate Xcode project and disable/enable one of them from the Xcode in Inspector while file selected:
+2. Enabled them both, generate Xcode project and disable/enable one of them from the Xcode in Inspector while file selected (easier to play around):
 <img width="373" height="152" alt="image" src="https://github.com/user-attachments/assets/b781f3b4-0ca6-412a-9a77-093658befe36" />
 
-Select different Xcode Project Type:  
+## Xcode Project Type selection
+Note: Supported from Unity 6000.5+  
+Select different Xcode Project Type in Player Settings:  
 <img width="523" height="88" alt="image" src="https://github.com/user-attachments/assets/3f0f2017-618c-4d33-8266-420823d58572" />
 
 
@@ -41,12 +45,14 @@ Regardless of which native implementation is enabled:
 - Same callback flow (C → C# delegate or UnitySendMessage → MonoBehaviour) 
 - No code changes required in user scripts
 
-
 # Supported for
-- Unity 6000.5+
-- Objective-C or Swift Project type
+## Unity 6000.0+
+- Objective-C Project Type
 - Xcode Device & Simulator SDKs
 - Unity as a Library setups
+
+## Unity 6000.5+
+- Swift Project type
 
 # Features Demonstrated
 
@@ -73,7 +79,7 @@ Managed C#:
 - RuntimeInitializeOnLoadMethod
 
 # Plugin initialization sequence
-| ObjC trampoline | < | > | Swift trampoline |
+| ObjC trampoline | < | > | Swift trampoline(6000.5+) |
 |----------|------|------|------------------|
 | main() | Unity | Unity | main()-> SwiftUI.App.main |
 | ⤷ load UnityRuntime.framework dynamically | Unity |  |  |
@@ -95,7 +101,7 @@ Managed C#:
 | · · · · ⤷ [ObjC] NativePlugin_SetCallback registered | NP.ObjC |  | · · · · ⤷ [SwiftPlugin] sharedInstance created |
 
 # App/Plugin termination sequence
-| ObjC trampoline | < | > | Swift trampoline |
+| ObjC trampoline | < | > | Swift trampoline(6000.5+) |
 |----------|------|------|------------------|
 |  main() | Unity | Unity | main()-> SwiftUI.App.main |
 |  ⤷ UFW runUIApplication |  OS | OS | ⤷ run UIApplication |
